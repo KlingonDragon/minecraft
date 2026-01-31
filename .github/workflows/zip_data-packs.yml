@@ -1,21 +1,12 @@
 name: Zip data-packs
 
-on: 
-  push:
-    paths:
-      - 'data-packs/**'
+on: [push]
 
 jobs:
   zip:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
-      - name: Set up release tag
-        id: tag
-        run: |
-          TAG="$(date +'%Y%m%d%H%M%S')"
-          echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Zip each directory
         run: |
@@ -29,8 +20,8 @@ jobs:
         id: release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.TAG }}
-          release_name: ${{ env.TAG }}
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
           draft: false
           prerelease: false
         env:
