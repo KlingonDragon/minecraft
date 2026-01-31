@@ -1,0 +1,48 @@
+name: Zip data-packs
+
+on: 
+  push:
+    paths:
+      - 'data-packs/**'
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up release tag
+        id: tag
+        run: |
+          TAG="$(date +'%Y%m%d%H%M%S')"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Zip each directory
+        run: |
+          mkdir -p data-pack-zips
+          for pack in data-packs/*/; do
+            name=$(basename "$pack")
+            zip -r "data-pack-zips/$name.zip" "$pack"
+          done
+          
+      - name: Create GitHub release
+        id: release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.TAG }}
+          release_name: ${{ env.TAG }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload zips to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: data-pack-zips/
+          asset_name: ''
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       
