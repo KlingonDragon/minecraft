@@ -8,6 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Set up release tag
+        id: tag
+        run: |
+          TAG="$(date +'%Y%m%d%H%M%S')"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
       - name: Zip each directory
         run: |
           mkdir -p data-pack-zips
@@ -20,8 +26,8 @@ jobs:
         id: release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          tag_name: ${{ env.TAG }}
+          release_name: ${{ env.TAG }}
           draft: false
           prerelease: false
         env:
