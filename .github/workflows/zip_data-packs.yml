@@ -1,6 +1,9 @@
 name: Zip data-packs
 
-on: [push]
+on: 
+  push:
+    paths:
+      - 'data-packs/**'
 
 jobs:
   zip:
