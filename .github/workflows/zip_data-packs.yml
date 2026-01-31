@@ -36,7 +36,7 @@ jobs:
       - name: Upload zips to release
         run: |
           for file in data-pack-zips/*.zip; do
-            gh release upload ${{ steps.release.outputs.tag_name }} "$file" --clobber
+            gh release upload ${{ env.TAG }} "$file" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
